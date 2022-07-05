@@ -57,7 +57,7 @@ class App extends React.Component {
                   latitude: this.state.originLatitude,
                   longitude: this.state.originLongitude,
                 }}
-                onChange={this.updateOrigin}
+                updateLocation={this.updateOrigin}
               />
             </div>
             <div>
@@ -70,7 +70,7 @@ class App extends React.Component {
                   latitude: this.state.destinationLatitude,
                   longitude: this.state.destinationLongitude,
                 }}
-                onChange={this.updateDestination}
+                updateLocation={this.updateDestination}
               />
             </div>
             <div>

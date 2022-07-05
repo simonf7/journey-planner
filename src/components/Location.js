@@ -14,47 +14,57 @@ class Location extends React.Component {
     this.setNewLocation = this.setNewLocation.bind(this);
     this.setNewLatitude = this.setNewLatitude.bind(this);
     this.setNewLongitude = this.setNewLongitude.bind(this);
+
+    // set some geocoding defaults
   }
 
-  setNewLocation(value) {
+  setNewLocation(event) {
+    let text = '';
+    let latitude = null;
+    let longitude = null;
+
+    if (event) {
+      text = event.formatted_address;
+      latitude = event.geometry.location.lat();
+      longitude = event.geometry.location.lng();
+    }
     this.setState(
       {
-        text: value,
+        text: text,
+        latitude: latitude,
+        longitude: longitude,
       },
       () => {
-        if (this.props.onChange) {
-          this.props.onChange(this.state);
-        }
-      }
-    );
-
-    // lookup location from GMaps
-    // if successful, update the state and call onChange
-  }
-
-  setNewLatitude(value) {
-    this.setState(
-      {
-        text: '',
-        latitude: value,
-      },
-      () => {
-        if (this.props.onChange) {
-          this.props.onChange(this.state);
+        if (this.props.updateLocation) {
+          this.props.updateLocation(this.state);
         }
       }
     );
   }
 
-  setNewLongitude(value) {
+  setNewLatitude(event) {
     this.setState(
       {
         text: '',
-        longitude: value,
+        latitude: event.target.value,
       },
       () => {
-        if (this.props.onChange) {
-          this.props.onChange(this.state);
+        if (this.props.updateLocation) {
+          this.props.updateLocation(this.state);
+        }
+      }
+    );
+  }
+
+  setNewLongitude(event) {
+    this.setState(
+      {
+        text: '',
+        longitude: event.target.value,
+      },
+      () => {
+        if (this.props.updateLocation) {
+          this.props.updateLocation(this.state);
         }
       }
     );
@@ -77,14 +87,14 @@ class Location extends React.Component {
           <Input
             id={this.props.id + 'latitude'}
             placeholder="Latitude"
-            value={this.props.latitude}
+            value={this.props.value.latitude}
             onChange={this.setNewLatitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
           />
           <Input
             id={this.props.id + 'longitude'}
             placeholder="Longitude"
-            value={this.props.longitude}
+            value={this.props.value.longitude}
             onChange={this.setNewLongitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
           />{' '}
