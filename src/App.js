@@ -1,6 +1,8 @@
 import './App.css';
 import React from 'react';
 import { DateTimePicker, Button } from 'react-rainbow-components';
+import Location from './components/Location';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -12,9 +14,28 @@ class App extends React.Component {
       destinationText: '',
       destinationLatitude: null,
       destinationLongitude: null,
-      departureDate: null,
-      returnDate: null,
+      departureDate: Date(),
+      returnDate: Date(),
     };
+
+    this.updateOrigin = this.updateOrigin.bind(this);
+    this.updateDestination = this.updateDestination.bind(this);
+  }
+
+  updateOrigin(value) {
+    this.setState({
+      originText: value.text,
+      originLatitude: value.latitude,
+      originLongitude: value.longitude,
+    });
+  }
+
+  updateDestination(value) {
+    this.setState({
+      destinationText: value.text,
+      destinationLatitude: value.latitude,
+      destinationLongitude: value.longitude,
+    });
   }
 
   render() {
@@ -28,9 +49,29 @@ class App extends React.Component {
           <aside className="app-aside">
             <div>
               <h3>Origin</h3>
+              <Location
+                id="origin"
+                placeholder="Enter origin location by name or coordinates below"
+                value={{
+                  text: this.state.originText,
+                  latitude: this.state.originLatitude,
+                  longitude: this.state.originLongitude,
+                }}
+                onChange={this.updateOrigin}
+              />
             </div>
             <div>
               <h3>Destination</h3>
+              <Location
+                id="destination"
+                placeholder="Enter destination location by name or coordinates below"
+                value={{
+                  text: this.state.destinationText,
+                  latitude: this.state.destinationLatitude,
+                  longitude: this.state.destinationLongitude,
+                }}
+                onChange={this.updateDestination}
+              />
             </div>
             <div>
               <h3>Departure</h3>
