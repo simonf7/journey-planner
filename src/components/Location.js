@@ -14,60 +14,50 @@ class Location extends React.Component {
     this.setNewLocation = this.setNewLocation.bind(this);
     this.setNewLatitude = this.setNewLatitude.bind(this);
     this.setNewLongitude = this.setNewLongitude.bind(this);
+  }
 
-    // set some geocoding defaults
+  setStateAndUpdate(newState) {
+    this.setState(newState, () => {
+      if (this.props.updateLocation) {
+        this.props.updateLocation(this.state);
+      }
+    });
   }
 
   setNewLocation(event) {
-    let text = '';
-    let latitude = null;
-    let longitude = null;
+    let newState = {
+      text: '',
+    };
 
     if (event) {
-      text = event.formatted_address;
-      latitude = event.geometry.location.lat();
-      longitude = event.geometry.location.lng();
-    }
-    this.setState(
-      {
-        text: text,
-        latitude: latitude,
-        longitude: longitude,
-      },
-      () => {
-        if (this.props.updateLocation) {
-          this.props.updateLocation(this.state);
-        }
+      if (event.formatted_address) {
+        newState = {
+          text: event.formatted_address,
+          latitude: event.geometry.location.lat(),
+          longitude: event.geometry.location.lng(),
+        };
       }
-    );
+    }
+
+    this.setStateAndUpdate(newState);
   }
 
   setNewLatitude(event) {
-    this.setState(
-      {
-        text: '',
-        latitude: event.target.value,
-      },
-      () => {
-        if (this.props.updateLocation) {
-          this.props.updateLocation(this.state);
-        }
-      }
-    );
+    const newState = {
+      text: '',
+      latitude: event.target.value,
+    };
+
+    this.setStateAndUpdate(newState);
   }
 
   setNewLongitude(event) {
-    this.setState(
-      {
-        text: '',
-        longitude: event.target.value,
-      },
-      () => {
-        if (this.props.updateLocation) {
-          this.props.updateLocation(this.state);
-        }
-      }
-    );
+    const newState = {
+      text: '',
+      longitude: event.target.value,
+    };
+
+    this.setStateAndUpdate(newState);
   }
 
   render() {
@@ -87,14 +77,14 @@ class Location extends React.Component {
           <Input
             id={this.props.id + 'latitude'}
             placeholder="Latitude"
-            value={this.props.value.latitude}
+            value={this.props.value.latitude ?? ''}
             onChange={this.setNewLatitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
           />
           <Input
             id={this.props.id + 'longitude'}
             placeholder="Longitude"
-            value={this.props.value.longitude}
+            value={this.props.value.longitude ?? ''}
             onChange={this.setNewLongitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
           />{' '}
