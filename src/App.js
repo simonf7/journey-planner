@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import { DateTimePicker, Button } from 'react-rainbow-components';
 import Location from './components/Location';
+import Map from './components/Map';
 
 class App extends React.Component {
   constructor(props) {
@@ -99,7 +100,20 @@ class App extends React.Component {
               />
             </div>
           </aside>
-          <section></section>
+          <section>
+            <Map
+              origin={{
+                text: this.state.originText,
+                latitude: this.state.originLatitude,
+                longitude: this.state.originLongitude,
+              }}
+              destination={{
+                text: this.state.destinationText,
+                latitude: this.state.destinationLatitude,
+                longitude: this.state.destinationLongitude,
+              }}
+            />
+          </section>
         </main>
       </div>
     );
