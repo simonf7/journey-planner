@@ -27,6 +27,8 @@ class Location extends React.Component {
   setNewLocation(event) {
     let newState = {
       text: '',
+      latitude: null,
+      longitude: null,
     };
 
     if (event) {
