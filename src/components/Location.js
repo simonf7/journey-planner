@@ -1,5 +1,11 @@
 import React from 'react';
-import { GoogleAddressLookup, Input } from 'react-rainbow-components';
+import {
+  GoogleAddressLookup,
+  Input,
+  ButtonIcon,
+} from 'react-rainbow-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 class Location extends React.Component {
   constructor(props) {
@@ -14,16 +20,10 @@ class Location extends React.Component {
     this.setNewLocation = this.setNewLocation.bind(this);
     this.setNewLatitude = this.setNewLatitude.bind(this);
     this.setNewLongitude = this.setNewLongitude.bind(this);
+    this.setLatitudeAndLongitude = this.setLatitudeAndLongitude.bind(this);
   }
 
-  setStateAndUpdate(newState) {
-    this.setState(newState, () => {
-      if (this.props.updateLocation) {
-        this.props.updateLocation(this.state);
-      }
-    });
-  }
-
+  // new location chosen using the geocoding component?
   setNewLocation(event) {
     let newState = {
       text: '',
@@ -39,55 +39,86 @@ class Location extends React.Component {
       }
     }
 
-    this.setStateAndUpdate(newState);
+    this.setState(newState, () => {
+      if (this.props.updateLocation) {
+        this.props.updateLocation(this.state);
+      }
+    });
   }
 
+  // latitude manually updated, remove the chosen location
   setNewLatitude(event) {
-    const newState = {
+    this.setState({
       text: '',
       latitude: event.target.value,
-    };
-
-    this.setStateAndUpdate(newState);
+    });
   }
 
+  // longitude manually updated, remove the chosen location
   setNewLongitude(event) {
-    const newState = {
+    this.setState({
       text: '',
       longitude: event.target.value,
-    };
+    });
+  }
 
-    this.setStateAndUpdate(newState);
+  // new latitude and longitude entered manually, update the map
+  setLatitudeAndLongitude() {
+    if (this.props.updateLocation) {
+      this.props.updateLocation(this.state);
+    }
   }
 
   render() {
+    const inputStyles = {
+      marginRight: '1em',
+    };
+
+    const { placeholder, id } = this.props;
+    const { text, latitude, longitude } = this.state;
+    const buttonDisabled = !this.state.latitude || !this.state.longitude;
+
     return (
       <div className="location">
         <div className="location-lookup">
           <GoogleAddressLookup
-            id={this.props.id + '_lookup'}
-            placeholder={this.props.placeholder}
+            id={id + '_lookup'}
+            placeholder={placeholder}
             apiKey={process.env.REACT_APP_API_KEY}
-            value={this.props.value.text}
+            value={text}
             onChange={this.setNewLocation}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
           />
         </div>
+        <p className="location-formheader">Specify Co-ordinates</p>
         <div className="location-coordinates">
           <Input
-            id={this.props.id + 'latitude'}
+            id={id + '_latitude'}
             placeholder="Latitude"
-            value={this.props.value.latitude ?? ''}
+            value={latitude ?? ''}
             onChange={this.setNewLatitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
+            style={inputStyles}
           />
           <Input
-            id={this.props.id + 'longitude'}
+            id={id + '_longitude'}
             placeholder="Longitude"
-            value={this.props.value.longitude ?? ''}
+            value={longitude ?? ''}
             onChange={this.setNewLongitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
-          />{' '}
+            style={inputStyles}
+          />
+          <div className="rainbow-p-right_large">
+            <ButtonIcon
+              id={id + '_button'}
+              variant="border-filled"
+              size="medium"
+              tooltip="Set co-ordinates"
+              icon={<FontAwesomeIcon icon={faLocationDot} />}
+              disabled={buttonDisabled}
+              onClick={this.setLatitudeAndLongitude}
+            />
+          </div>
         </div>
       </div>
     );
