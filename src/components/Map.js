@@ -2,10 +2,20 @@ import React from 'react';
 import { MapMarker, GMap } from 'react-rainbow-components';
 
 class Map extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      render: true,
+    };
+  }
+
+  // are both latitude and longitude set?
   isLocationSet(location) {
     return location.latitude && location.longitude;
   }
 
+  // make sure our location is defined with floats
   toFloats(location) {
     if (this.isLocationSet(location)) {
       location.latitude = parseFloat(location.latitude);
@@ -15,16 +25,41 @@ class Map extends React.Component {
     return location;
   }
 
-  render() {
-    let { origin, destination } = this.props;
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps) {
+      // this is a bit of a hack, the GMap doesn't update when props are
+      // changed, so this hides and remounts it to force changes to be shown
+      if (this.state.render) {
+        this.setState(
+          {
+            render: false,
+          },
+          () => {
+            setTimeout(() => {
+              this.setState({
+                render: true,
+              });
+            }, 0);
+          }
+        );
+      }
+    }
+  }
 
+  render() {
+    const styles = {
+      width: '100%',
+      height: '100%',
+    };
+
+    let { origin, destination } = this.props;
     origin = this.toFloats(origin);
     destination = this.toFloats(destination);
 
     // set default values
     let mapLatitude = null;
     let mapLongitude = null;
-    let mapZoom = 10;
+    let mapZoom = 8;
 
     // which locations can we show and where do we centre
     if (this.isLocationSet(origin) && this.isLocationSet(destination)) {
@@ -39,8 +74,19 @@ class Map extends React.Component {
     }
 
     return (
-      <div className="rainbow-p-vertical_x-large rainbow-p-horizontal_small">
-        {mapLatitude && mapLongitude && (
+      <div
+        className="rainbow-p-vertical_x-large rainbow-p-horizontal_small"
+        style={styles}
+      >
+        {(!mapLatitude || !mapLongitude) && (
+          <div className="map-placeholder">
+            <h3>
+              Please enter your journey origin and destination to show a map of
+              your proposed journey.
+            </h3>
+          </div>
+        )}
+        {this.state.render && mapLatitude && mapLongitude && (
           <GMap
             apiKey={process.env.REACT_APP_API_KEY}
             zoom={mapZoom}
@@ -56,9 +102,9 @@ class Map extends React.Component {
             )}
             {this.isLocationSet(destination) && (
               <MapMarker
-                latitude={this.props.destination.latitude}
-                longitude={this.props.destination.longitude}
-                label={this.props.destination.text}
+                latitude={destination.latitude}
+                longitude={destination.longitude}
+                label={destination.text}
               />
             )}
           </GMap>
