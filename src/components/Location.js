@@ -88,9 +88,9 @@ class Location extends React.Component {
             value={text}
             onChange={this.setNewLocation}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
+            disabled={disabled}
           />
         </div>
-        <p className="location-formheader">Specify Co-ordinates</p>
         <div className="location-coordinates">
           <Input
             id={id + '_latitude'}

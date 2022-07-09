@@ -63,14 +63,8 @@
   }
 }
 
-.location-formheader {
-  font-size: 0.8em;
-  margin: 0;
-  text-align: left;
-}
-
 .location-coordinates {
-  display: flex;
+  display: none;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
