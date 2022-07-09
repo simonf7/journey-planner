@@ -3,6 +3,7 @@ import React from 'react';
 import { DateTimePicker, Button } from 'react-rainbow-components';
 import Location from './components/Location';
 import Map from './components/Map';
+import axios from 'axios';
 
 class App extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class App extends React.Component {
 
     this.updateOrigin = this.updateOrigin.bind(this);
     this.updateDestination = this.updateDestination.bind(this);
+    this.submitJourney = this.submitJourney.bind(this);
   }
 
   updateOrigin(value) {
@@ -41,7 +43,30 @@ class App extends React.Component {
   }
 
   submitJourney() {
+    this.setState(
+      {
+        submitting: true,
+      },
+      () => {
+        // post the state as that contains all the data we need, except the submitting status
+        const postData = { ...this.state };
+        delete postData.submitting;
 
+        axios
+          .post('https://reqres.in/api/journey', postData)
+          .then((res) => {
+            alert('Journey submitted successfully!');
+          })
+          .catch((err) => {
+            alert('Sorry, there was an error submitting your journey :-(');
+          })
+          .finally(() => {
+            this.setState({
+              submitting: false,
+            });
+          });
+      }
+    );
   }
 
   render() {
@@ -62,7 +87,11 @@ class App extends React.Component {
       !originLongitude ||
       !destinationLatitude ||
       !destinationLongitude ||
-      !submitting;
+      submitting;
+
+    const submitText = submitting
+      ? 'Submitting your journey'
+      : 'Submit journey';
 
     return (
       <div className="app">
@@ -84,6 +113,7 @@ class App extends React.Component {
                     longitude: originLongitude,
                   }}
                   updateLocation={this.updateOrigin}
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -97,6 +127,7 @@ class App extends React.Component {
                     longitude: destinationLongitude,
                   }}
                   updateLocation={this.updateDestination}
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -106,6 +137,7 @@ class App extends React.Component {
                   locale="en-UK"
                   value={departureDate}
                   onChange={(value) => this.setState({ departureDate: value })}
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -115,16 +147,18 @@ class App extends React.Component {
                   locale="en-UK"
                   value={returnDate}
                   onChange={(value) => this.setState({ returnDate: value })}
+                  disabled={submitting}
                 />
               </div>
             </div>
             <div className="app-submit">
               <Button
                 id="submit-journey"
-                label="Submit Journey"
+                label={submitText}
                 variant="brand"
                 className="rainbow-m-around_medium"
                 disabled={submitDisabled}
+                onClick={this.submitJourney}
               />
             </div>
           </aside>
@@ -145,10 +179,11 @@ class App extends React.Component {
           <div className="main-submit">
             <Button
               id="extra-submit-journey"
-              label="Submit Journey"
+              label={submitText}
               variant="brand"
               className="rainbow-m-around_medium"
               disabled={submitDisabled}
+              onClick={this.submitJourney}
             />
           </div>
         </main>

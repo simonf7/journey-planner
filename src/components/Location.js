@@ -74,7 +74,7 @@ class Location extends React.Component {
       marginRight: '1em',
     };
 
-    const { placeholder, id } = this.props;
+    const { placeholder, id, disabled } = this.props;
     const { text, latitude, longitude } = this.state;
     const buttonDisabled = !this.state.latitude || !this.state.longitude;
 
@@ -99,6 +99,7 @@ class Location extends React.Component {
             onChange={this.setNewLatitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
             style={inputStyles}
+            disabled={disabled}
           />
           <Input
             id={id + '_longitude'}
@@ -107,6 +108,7 @@ class Location extends React.Component {
             onChange={this.setNewLongitude}
             className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"
             style={inputStyles}
+            disabled={disabled}
           />
           <div className="rainbow-p-right_large">
             <ButtonIcon
