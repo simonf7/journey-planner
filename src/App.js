@@ -16,8 +16,8 @@ class App extends React.Component {
       destinationText: '',
       destinationLatitude: null,
       destinationLongitude: null,
-      departureDate: Date(),
-      returnDate: Date(),
+      departureDate: new Date(),
+      returnDate: new Date(),
       submitting: false,
     };
 
@@ -136,6 +136,7 @@ class App extends React.Component {
                   id="departure-datetime"
                   locale="en-UK"
                   value={departureDate}
+                  minDate={new Date()}
                   onChange={(value) => this.setState({ departureDate: value })}
                   disabled={submitting}
                 />
@@ -146,6 +147,7 @@ class App extends React.Component {
                   id="return-datetime"
                   locale="en-UK"
                   value={returnDate}
+                  minDate={new Date()}
                   onChange={(value) => this.setState({ returnDate: value })}
                   disabled={submitting}
                 />
