@@ -51,6 +51,9 @@ class App extends React.Component {
         // post the state as that contains all the data we need, except the submitting status
         const postData = { ...this.state };
         delete postData.submitting;
+        // format the date to something more appropriate for POSTing
+        postData.departureDate =  postData.departureDate.toJSON();
+        postData.returnDate = postData.returnDate.toJSON();
 
         axios
           .post('https://reqres.in/api/journey', postData)
