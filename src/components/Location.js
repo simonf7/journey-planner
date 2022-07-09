@@ -23,7 +23,7 @@ class Location extends React.Component {
     this.setLatitudeAndLongitude = this.setLatitudeAndLongitude.bind(this);
   }
 
-  // new location chosen using the geocoding component?
+  // new location chosen using the geocoding component
   setNewLocation(event) {
     let newState = {
       text: '',
